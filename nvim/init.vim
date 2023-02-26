@@ -1,10 +1,10 @@
 call plug#begin()
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mhinz/vim-startify' 
 Plug 'vimwiki/vimwiki'
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'ghifarit53/tokyonight-vim'
+Plug 'morhetz/gruvbox'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'vwxyutarooo/nerdtree-devicons-syntax'
@@ -13,12 +13,15 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'johnstef99/vim-nerdtree-syntax-highlight'
 Plug 'ryanoasis/vim-devicons'
-
 Plug 'vwxyutarooo/nerdtree-devicons-syntax'
 call plug#end()
 
+set updatetime=300
+set signcolumn=yes
+
+inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 let g:airline_powerline_fonts = 1
 
 set nocompatible
@@ -32,19 +35,29 @@ if (has("termguicolors"))
 endif
 
 let g:NERDCompactSexyComs = 1
-let g:NERDTreeShowHidden=1
-
-let g:tokyonight_style = 'night' " available: night, storm
+let g:NERDTreeShowHidden = 1
 
 let g:vimwiki_list = [{'path': '~/Documents/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
 let g:Hexokinase_highlighters = ['virtual']
 set number
-set relativenumber
 
-colorscheme tokyonight
+
+let g:gruvbox_italic=1
+
+colorscheme gruvbox
                            
 
+" use <tab> to trigger completion and navigate to the next complete item
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
 
 " open new split panes to right and below
 set splitright
@@ -52,8 +65,8 @@ set splitbelow
 
 let mapleader = ","
 
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
+nnoremap <leader>n :NERDTreeFocusC<CR>
+nnoremap <C-n>  :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 
@@ -69,5 +82,5 @@ let s:startify_ascii_header = [
 \]
 let g:startify_custom_header = s:startify_ascii_header
       
-
+set clipboard=unnamedplus
 let base16colorspace=256
